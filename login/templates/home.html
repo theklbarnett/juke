@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login & Registration</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'home_style.css' %}">
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#email').change(function() {
+				var email = $(this).val();
+				$.ajax({
+					url: '/ajax/email_uniqueness',
+					data: {
+						'email': email
+					},
+					dataType: 'json',
+					success: function (data) {
+						if (data.is_taken) {
+							$(".messages.register").append('<li id="email_uniqueness">Email already exists</li>');		
+						} else {
+							console.log('remove')
+							$('#email_uniqueness').remove();
+						}
+					}
+				});
+			});
+			$('#register_button').click(function(button) {		
+				var complete = true;
+				$("#registration > form > input").each(function(index, element) {
+					if (element.type === "text" || element.type === "password" || element.type === "date") {
+						if (element.value == '') {
+				        	complete = false;
+				        	console.log(element)
+				        	console.log($("label[for='" + element + "']"));
+				        	$("label[for='" + element.name + "']").css("color", 'red');
+				    	} else {
+				    		$("label[for='" + element.name + "']").css("color", 'black');
+				    	}
+
+					}
+				});
+				if (complete == false) {
+					if (!$('.incomplete_field').length) {
+						$(".messages.register").append('<li class="incomplete_field">All fields must be filled</li>');
+
+					}
+					button.preventDefault();
+				} else {
+					$('.incomplete_field').remove();
+				}
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="registration">
+			<h1>Registration</h1>
+			<form action="register" method="post">
+				{% csrf_token %}
+				<label for="first_name">First Name</label>
+				<input type="text" name="first_name">
+				<label for="last_name">Last Name</label>
+				<input type="text" name="last_name">
+				<label for="birthday">Birthday</label>
+				<input type="date" name="birthday" id="birthday">
+				<label for="email">Email</label>
+				<input type="text" name="email" id="email">
+				<label for="password">Password</label>
+				<input type="Password" name="password">
+				<label for="pw_confirm">Confirm Password</label>
+				<input type="Password" name="pw_confirm">
+				<button type="submit" id="register_button">Register</button>
+			</form>
+			
+			<ul class="messages register">
+				{% if messages %}
+					{% for message in messages %}
+						{% if message.extra_tags == 'register' %}
+							<li>{{ message }}</li>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			</ul>
+			
+		</div>
+		<div id="login">
+			<h1>Login</h1>
+			<form action="login" method="post">
+				{% csrf_token %}
+				<label for="email_login">Email</label>
+				<input type="text" name="email_login">
+				<label for="password_login">Password</label>
+				<input type="Password" name="password_login">
+				<button type="submit">Login In</button>
+			</form>
+
+			<ul class="messages login">
+				{% if messages %}
+					{% for message in messages %}
+						{% if message.extra_tags == 'login' %}
+							<li>{{ message }}</li>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

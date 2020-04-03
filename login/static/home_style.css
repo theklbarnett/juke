@@ -1,0 +1,40 @@
+#wrapper {
+	padding: 30px;
+}
+
+#registration, #login {
+	display: inline-block;
+	width: 400px;
+	vertical-align: top;
+	margin: auto;
+}
+
+.messages {
+	color: red;
+	list-style-type: none;
+	font-size: 12px;
+	margin-top: 10px;
+	text-align: center;
+	padding: 0;
+}
+
+
+h1 {
+	text-align: center;
+}
+
+input {
+	width: 40%;
+}
+
+label {
+	width: 35%;
+	margin-left: 50px;
+}
+
+button {
+	display: block;
+	margin: auto;
+	margin-top: 10px;
+
+}
